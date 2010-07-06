@@ -325,7 +325,7 @@
 				HEADER_SEARCH_PATHS = "${PROJECT_DIR}/../facebook-iphone-sdk/src";
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphonesimulator4.0;
 			};
 			name = Debug;
 		};
@@ -341,7 +341,7 @@
 				HEADER_SEARCH_PATHS = "${PROJECT_DIR}/../facebook-iphone-sdk/src";
 				OTHER_LDFLAGS = "-ObjC";
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.2;
+				SDKROOT = iphonesimulator4.0;
 			};
 			name = Release;
 		};

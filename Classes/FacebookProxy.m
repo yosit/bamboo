@@ -2,10 +2,10 @@
 #import "GraphAPI.h"
 
 // testing rediculousness
-#import "AppDelegate_Pad.h"
-#import "PadRootController.h"
-#import "FBLoginDialog.h"
-#import "FBDialog.h"
+//#import "AppDelegate_Pad.h"
+//#import "PadRootController.h"
+#import "FBConnect/FBLoginDialog.h"
+#import "FBConnect/FBDialog.h"
 
 // URL Formats for code & access_token
 NSString* const kFBAuthURLFormat = @"https://graph.facebook.com/oauth/authorize?display=touch&client_id=%@&redirect_uri=%@&scope=%@";
