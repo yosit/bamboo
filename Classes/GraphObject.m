@@ -8,9 +8,9 @@
 
 @implementation GraphObject
 
-@synthesize _properties;
-@synthesize _profilePictureSmall;
-@synthesize _profilePictureLarge;
+@synthesize properties = _properties;
+@synthesize profilePictureSmall = _profilePictureSmall;
+@synthesize profilePictureLarge = _profilePictureLarge;
 
 #pragma mark Initialization
 
@@ -34,7 +34,7 @@
 {
 	if ( self = [super init] )
 	{
-		self._properties = [[NSDictionary alloc] initWithDictionary:newProperties];
+		self.properties = [[NSDictionary alloc] initWithDictionary:newProperties];
 		[self initSelf];
 	}
 	return self;
@@ -64,8 +64,8 @@
 -(id)propertyWithKey:(id)key
 {
 	id propertyObject = nil;
-	if ( nil != self._properties )
-		propertyObject = [self._properties objectForKey:key];
+	if ( nil != _properties )
+		propertyObject = [self.properties objectForKey:key];
 	return propertyObject;
 }
 
@@ -101,9 +101,9 @@
 	if ( nil == _profilePictureSmall )
 	{
 		GraphAPI* graph = [self getGraph];
-		self._profilePictureSmall = [graph getProfilePhotoForObject:self.objectID];
+		self.profilePictureSmall = [graph getProfilePhotoForObject:self.objectID];
 	}
-  return self._profilePictureSmall;
+  return self.profilePictureSmall;
 }
 
 -(UIImage*)largePicture
@@ -111,9 +111,9 @@
 	if ( nil == _profilePictureLarge )
 	{
 		GraphAPI* graph = [self getGraph];
-		self._profilePictureLarge = [graph getLargeProfilePhotoForObject:self.objectID];
+		self.profilePictureLarge = [graph getLargeProfilePhotoForObject:self.objectID];
 	}
-  return self._profilePictureLarge;
+  return self.profilePictureLarge;
 }
 
 @end

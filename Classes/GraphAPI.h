@@ -13,11 +13,11 @@
 	BOOL _isSynchronous;
 }
 
-@property (nonatomic, retain) NSString* _accessToken;
-@property (nonatomic, retain) NSMutableArray* _connections;
-@property (nonatomic, retain) GraphDelegate* _asyncronousDelegate;
-@property (nonatomic, retain) NSData* _responseData;
-@property (nonatomic, assign) BOOL _isSynchronous;
+@property (nonatomic, copy) NSString* accessToken;
+@property (nonatomic, retain) NSMutableArray* connections;
+@property (nonatomic, retain) GraphDelegate* asyncronousDelegate;
+@property (nonatomic, retain) NSData* responseData;
+@property (nonatomic, assign) BOOL isSynchronous;
 
 -(id)initWithAccessToken:(NSString*)access_token;
 

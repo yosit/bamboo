@@ -13,10 +13,10 @@
 	UIImage* _profilePictureLarge;
 }
 
-@property (nonatomic, retain) NSDictionary* _properties;
+@property (nonatomic, retain) NSDictionary* properties;
 
-@property (nonatomic, retain) UIImage* _profilePictureSmall;
-@property (nonatomic, retain) UIImage* _profilePictureLarge;
+@property (nonatomic, retain) UIImage* profilePictureSmall;
+@property (nonatomic, retain) UIImage* profilePictureLarge;
 
 @property (nonatomic, readonly) NSString* objectID;
 @property (nonatomic, readonly) NSString* name;

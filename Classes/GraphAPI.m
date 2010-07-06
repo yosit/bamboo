@@ -70,11 +70,11 @@ NSString* const kConnectionAlbums = @"albums";
 
 @implementation GraphAPI
 
-@synthesize _accessToken;
-@synthesize _connections;
-@synthesize _asyncronousDelegate;
-@synthesize _responseData;
-@synthesize _isSynchronous;
+@synthesize accessToken = _accessToken;
+@synthesize connections = _connections;
+@synthesize asyncronousDelegate = _asyncronousDelegate;
+@synthesize responseData = _responseData;
+@synthesize isSynchronous = _isSynchronous;
 
 #pragma mark Initialization
 
@@ -82,21 +82,17 @@ NSString* const kConnectionAlbums = @"albums";
 {
 	if ( self = [super init] )
 	{
-		self._accessToken = access_token;
-		self._connections = nil;
-		self._asyncronousDelegate = nil;
-		self._responseData = nil;
-		self._isSynchronous = YES;
+		self.accessToken = access_token;
 	}
 	return self;	
 }
 
 -(void)setSynchronousMode:(BOOL)isSynchronous
 {
-	if ( self._isSynchronous != isSynchronous )
+	if ( _isSynchronous != isSynchronous )
 	{
 		// something else will probably happen here too
-		self._isSynchronous = isSynchronous;
+		self.isSynchronous = isSynchronous;
 	}
 }
 
@@ -171,8 +167,8 @@ NSString* const kConnectionAlbums = @"albums";
 	
 	@try
 	{
-		if ( nil != responseObj && nil != responseObj._properties )
-			connections = [[[responseObj._properties objectForKey:kKeyArgumentMetadata] objectForKey:@"connections"] allKeys];
+		if ( nil != responseObj && nil != responseObj.properties )
+			connections = [[[responseObj.properties objectForKey:kKeyArgumentMetadata] objectForKey:@"connections"] allKeys];
 	}
 	@catch (id exception) 
 	{
@@ -279,19 +275,19 @@ NSString* const kConnectionAlbums = @"albums";
 
 -(NSData*)api:(NSString*)obj_id args:(NSMutableDictionary*)request_args verb:(NSString*)verb
 {
-	if ( nil != self._accessToken )
+	if ( nil != _accessToken )
 	{
 		if ( nil == request_args )
 		{
 			request_args = [NSMutableDictionary dictionaryWithCapacity:1];
 		}
-		[request_args setObject:self._accessToken forKey:kArgumentKeyAccessToken];
+		[request_args setObject:self.accessToken forKey:kArgumentKeyAccessToken];
 	}
 								 
 	NSData* response = nil;
 
 	// will probably want to generally use async calls, but building this with sync first is easiest
-	if (self._isSynchronous)
+	if (self.isSynchronous)
 		response = [self makeSynchronousRequest:obj_id args:request_args verb:verb];
 	else
 		response = [self makeAsynchronousRequest:obj_id args:request_args verb:verb];
@@ -309,7 +305,7 @@ NSString* const kConnectionAlbums = @"albums";
 	}
 	
 	//	NSString* responseString = nil;
-	self._responseData = nil;
+	self.responseData = nil;
 	NSString* urlString;
 	NSMutableURLRequest* r_url;
 	
@@ -345,15 +341,15 @@ NSString* const kConnectionAlbums = @"albums";
 //	NSURLResponse* response;
 	NSError* error;
 	
-	if ( nil == self._asyncronousDelegate )
-		self._asyncronousDelegate = [[GraphDelegate alloc] init];
+	if ( nil == _asyncronousDelegate )
+		self.asyncronousDelegate = [[GraphDelegate alloc] init];
 	
 	// async call
-	NSURLConnection* newConnection = [[NSURLConnection alloc] initWithRequest:r_url delegate:self._asyncronousDelegate];
+	NSURLConnection* newConnection = [[NSURLConnection alloc] initWithRequest:r_url delegate:self.asyncronousDelegate];
 	
 	if ( nil != newConnection )
 	{
-		[self._connections addObject:newConnection];
+		[self.connections addObject:newConnection];
 	}
 	else
 	{
@@ -376,7 +372,7 @@ NSString* const kConnectionAlbums = @"albums";
 	}
 
 //	NSString* responseString = nil;
-	self._responseData = nil;
+	self.responseData = nil;
 	NSString* urlString;
 	NSMutableURLRequest* r_url;
 	
@@ -413,7 +409,7 @@ NSString* const kConnectionAlbums = @"albums";
 	NSError* error;
 	
 	// synchronous call
-	self._responseData = [NSURLConnection sendSynchronousRequest:r_url returningResponse:&response error:&error];
+	self.responseData = [NSURLConnection sendSynchronousRequest:r_url returningResponse:&response error:&error];
 
 	// async
 	// self._connection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
@@ -429,7 +425,7 @@ NSString* const kConnectionAlbums = @"albums";
 //	}
 	
 	
-	if ( nil == self._responseData )
+	if ( nil == _responseData )
 	{
 		NSLog(@"Connection failed!\n URL = %@\n Error - %@ %@",
 					urlString,
@@ -437,7 +433,7 @@ NSString* const kConnectionAlbums = @"albums";
 					[[error userInfo] objectForKey:@"NSUnderlyingError"]);
 	}
 
-	return self._responseData;
+	return self.responseData;
 }
 
 -(NSString*)encodeParams:(NSDictionary*)request_args
@@ -514,10 +510,10 @@ NSString* const kConnectionAlbums = @"albums";
 	
 	@try
 	{
-		if ( nil != r_obj && nil != r_obj._properties )
+		if ( nil != r_obj && nil != r_obj.properties )
 		{
 			// this should be an array of dictionaries, we turn it into an array of GraphObjects
-			NSArray* jsonConnections = [r_obj._properties objectForKey:@"data"];
+			NSArray* jsonConnections = [r_obj.properties objectForKey:@"data"];
 			connections = [NSMutableArray arrayWithCapacity:[jsonConnections count]];
 			for ( NSDictionary* i_like in jsonConnections )
 			{
