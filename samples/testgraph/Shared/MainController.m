@@ -205,7 +205,7 @@
 {
 	// if we have a saved access_token, but no graph...make one
 	// but if not, we don't try to login, just do nothing
-	if ( nil == self._graph && nil != [FacebookProxy instance]._oAuthAccessToken )
+	if ( nil == self._graph && nil != [FacebookProxy instance].oAuthAccessToken )
 	{
 		self._graph = [[FacebookProxy instance] newGraph];
 	}

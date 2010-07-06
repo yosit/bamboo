@@ -224,13 +224,13 @@
 	// FacebookProxy is useful as a way to have users login to Facebook, and a convenient way to get an access_token
 	// you are welcome to use it, or provide your own facebook login mechanism
 	
-	if ( nil != [FacebookProxy instance]._oAuthAccessToken )
+	if ( nil != [FacebookProxy instance].oAuthAccessToken )
 	{
 		// either way, the GraphAPI object is what you want.  this method creates a new GraphAPI object using the FacebookProxy's access_token		
 		if ( nil == self._graph )
 			self._graph = [[FacebookProxy instance] newGraph];	
 
-		self._statusInfo.text = [FacebookProxy instance]._oAuthAccessToken;
+		self._statusInfo.text = [FacebookProxy instance].oAuthAccessToken;
 
 		GraphObject* me = [self._graph getObject:@"me"];
 		self._profileImage.image = [me largePicture];
@@ -248,7 +248,7 @@
 
 -(bool)haveGraph
 {
-	if ( nil == self._graph && nil != [FacebookProxy instance]._oAuthAccessToken )
+	if ( nil == self._graph && nil != [FacebookProxy instance].oAuthAccessToken )
 	{
 		self._graph = [[FacebookProxy instance] newGraph];
 	}
@@ -271,7 +271,7 @@
 {
 	if ( [self haveGraph] )
 	{
-		self._statusInfo.text = [FacebookProxy instance]._oAuthAccessToken;
+		self._statusInfo.text = [FacebookProxy instance].oAuthAccessToken;
 		
 		self._profileImage.image = [self._graph getLargeProfilePhotoForObject:@"me"];	
 		

@@ -15,7 +15,7 @@ extern NSString* const kFBRedirectURI;
 	NSData* _webPageData;
 }
 
-@property (nonatomic, retain) NSData* _webPageData;
+@property (nonatomic, retain) NSData* webPageData;
 
 @end
 
@@ -44,23 +44,23 @@ extern NSString* const kFBRedirectURI;
 	FBDataDialog* _permissionDialog;	
 }
 
-@property (nonatomic, retain) FBSession* _session;
-@property (nonatomic, assign) FBUID _uid;
+@property (nonatomic, retain) FBSession* session;
+@property (nonatomic, assign) FBUID uid;
 
-@property (nonatomic, retain) NSString* _oAuthAccessToken;
+@property (nonatomic, copy) NSString* oAuthAccessToken;
 
-@property (nonatomic, assign) id _authTarget;
-@property (nonatomic, assign) SEL _authCallback;
+@property (nonatomic, assign) id authTarget;
+@property (nonatomic, assign) SEL authCallback;
 
-@property (nonatomic, retain) NSMutableData* _authResponse;
-@property (nonatomic, retain) NSMutableData* _accessTokenResponse;
-@property (nonatomic, retain) NSString* _codeString;
+@property (nonatomic, retain) NSMutableData* authResponse;
+@property (nonatomic, retain) NSMutableData* accessTokenResponse;
+@property (nonatomic, copy) NSString* codeString;
 
-@property (nonatomic, retain) NSURLConnection* _authConnection;
-@property (nonatomic, retain) NSURLConnection* _accessTokenConnection;
+@property (nonatomic, retain) NSURLConnection* authConnection;
+@property (nonatomic, retain) NSURLConnection* accessTokenConnection;
 
-@property (nonatomic, retain) FBLoginDialog* _loginDialog;
-@property (nonatomic, retain) FBDataDialog* _permissionDialog;
+@property (nonatomic, retain) FBLoginDialog* loginDialog;
+@property (nonatomic, retain) FBDataDialog* permissionDialog;
 
 
 +(FacebookProxy*)instance;

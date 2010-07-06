@@ -27,7 +27,7 @@ NSString* const kKeyAccessToken = @"kKeyAccessToken";
 
 @implementation FBDataDialog
 
-@synthesize _webPageData;
+@synthesize webPageData = _webPageData ;
 
 #pragma mark Initialization
 
@@ -35,7 +35,7 @@ NSString* const kKeyAccessToken = @"kKeyAccessToken";
 {
 	if ( self = [super init] )
 	{
-		self._webPageData = nil;
+		self.webPageData = nil;
 	}
 	return self;
 }
@@ -49,9 +49,9 @@ NSString* const kKeyAccessToken = @"kKeyAccessToken";
 
 -(void)load
 {
-	if ( nil != self._webPageData )
+	if ( nil != _webPageData )
 	{
-		[_webView loadData:self._webPageData MIMEType:@"text/html" textEncodingName:@"utf-8" baseURL:[NSURL URLWithString:@""]];
+		[_webView loadData:self.webPageData MIMEType:@"text/html" textEncodingName:@"utf-8" baseURL:[NSURL URLWithString:@""]];
 //		[self loadData:self._webPageData MIMEType:@"text/html" textEncodingName:@"utf-8" baseURL:[NSURL URLWithString:@"https://www.facebook.com/connect/uiserver.php"]];
 	}
 }
@@ -67,8 +67,8 @@ NSString* const kKeyAccessToken = @"kKeyAccessToken";
 	if ( [splitStrings count] > 1 )
 	{
 		FacebookProxy* fb_p = [FacebookProxy instance];
-		fb_p._codeString = [splitStrings objectAtIndex:1];
-		NSLog( @"in FBDataDialog, codeString = [%@] close down the dialog", fb_p._codeString );
+		fb_p.codeString = [splitStrings objectAtIndex:1];
+		NSLog( @"in FBDataDialog, codeString = [%@] close down the dialog", fb_p.codeString );
 		[self dismissWithSuccess:YES animated:YES];
 		[fb_p loadAccessToken];
 		return NO;
@@ -83,23 +83,23 @@ NSString* const kKeyAccessToken = @"kKeyAccessToken";
 
 @implementation FacebookProxy
 
-@synthesize _session;
-@synthesize _uid;
+@synthesize session= _session;
+@synthesize uid = _uid;
 
-@synthesize _oAuthAccessToken;
+@synthesize oAuthAccessToken = _oAuthAccessToken;
 
-@synthesize _authTarget;
-@synthesize _authCallback;
+@synthesize authTarget =_authTarget;
+@synthesize authCallback = _authCallback;
 
-@synthesize _authResponse;
-@synthesize _accessTokenResponse;
-@synthesize _codeString;
+@synthesize authResponse = _authResponse;
+@synthesize accessTokenResponse = _accessTokenResponse;
+@synthesize codeString = _codeString;
 
-@synthesize _authConnection;
-@synthesize _accessTokenConnection;
+@synthesize authConnection = _authConnection;
+@synthesize accessTokenConnection = _accessTokenConnection;
 
-@synthesize _loginDialog;
-@synthesize _permissionDialog;
+@synthesize loginDialog = _loginDialog;
+@synthesize permissionDialog =_permissionDialog;
 
 #pragma mark Singleton Methods
 
@@ -123,20 +123,6 @@ static FacebookProxy* gFacebookProxy = NULL;
 {
 	if ( self = [super init] )
 	{
-		self._uid = 0;
-//		[self getSession];
-		self._session = nil;
-		
-		self._oAuthAccessToken = nil;
-		self._authTarget = nil;
-		self._authCallback = nil;
-		self._authResponse = nil;
-		self._accessTokenResponse = nil;
-		self._codeString = nil;
-		self._authConnection = nil;
-		self._accessTokenConnection = nil;
-		self._loginDialog = nil;
-		self._permissionDialog = nil;
 	}
 	return self;
 }
@@ -154,9 +140,9 @@ static FacebookProxy* gFacebookProxy = NULL;
 - (void)dealloc 
 {
 	//	[self stopEvents];
-	if ( self._session != nil )
-		[self._session.delegates removeObject:self];	
-	
+	if ( _session != nil )
+		[_session.delegates removeObject:self];	
+	[_session release];
 	[_oAuthAccessToken release];
 	[_authResponse release];
 	[_accessTokenResponse release];
@@ -185,14 +171,14 @@ static FacebookProxy* gFacebookProxy = NULL;
 	self = [[FacebookProxy alloc] init];
 	if (self != nil)
 	{
-		self._oAuthAccessToken = [coder decodeObjectForKey:kKeyAccessToken]; 
+		self.oAuthAccessToken = [coder decodeObjectForKey:kKeyAccessToken]; 
 	}   
 	return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 {
-	[coder encodeObject:self._oAuthAccessToken forKey:kKeyAccessToken];
+	[coder encodeObject:self.oAuthAccessToken forKey:kKeyAccessToken];
 }
 
 #pragma mark NSDefaults Methods
@@ -232,10 +218,10 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 -(void)getSession
 {
-	if ( ![self._session resume] )
+	if ( ![_session resume] )
 	{
 		NSLog( @"Starting new session" );
-		self._session = [FBSession sessionForApplication:kFBAPIKey secret:kFBAppSecret delegate:self];
+		self.session = [FBSession sessionForApplication:kFBAPIKey secret:kFBAppSecret delegate:self];
 	}
 	else 
 	{
@@ -245,19 +231,19 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 -(bool)isLoggedin
 {
-	return self._uid != 0;
+	return _uid != 0;
 }
 
 -(void)login
 {
-	if ( nil == self._session )
+	if ( nil == _session )
 		[self getSession];
 	
-	if ( self._session )
+	if ( _session )
 	{
-		self._loginDialog = [[FBLoginDialog alloc] initWithSession:self._session];
-		self._loginDialog.delegate = self;
-		[self._loginDialog show];
+		self.loginDialog = [[FBLoginDialog alloc] initWithSession:self.session];
+		self.loginDialog.delegate = self;
+		[self.loginDialog show];
 	}
 }
 
@@ -265,15 +251,15 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 - (void)session:(FBSession*)session didLogin:(FBUID)uid 
 {
-	self._uid = uid;
-	NSLog(@"User with id %lld logged in.", self._uid);
+	self.uid = uid;
+	NSLog(@"User with id %lld logged in.", self.uid);
 }
 
 #pragma mark FBDialogDelegate [Login Dialog] Methods
 
 - (void)dialogDidSucceed:(FBDialog*)dialog
 {
-	if ( dialog == self._loginDialog )
+	if ( dialog == _loginDialog )
 	{
 		NSLog( @"loginDialog DidSucceed" );
 		[self authorize];
@@ -291,14 +277,14 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 -(bool)isAuthorized
 {
-	return nil != self._oAuthAccessToken;
+	return nil != _oAuthAccessToken;
 }
 
 -(void)finishedAuthorizing
 {
-	if ( self._authTarget && self._authCallback)
+	if ( _authTarget && _authCallback)
 	{
-		[self._authTarget performSelector:self._authCallback];
+		[self.authTarget performSelector:self.authCallback];
 	}			
 }
 
@@ -324,11 +310,11 @@ static FacebookProxy* gFacebookProxy = NULL;
 																					timeoutInterval:60.0];
 		// create the connection with the request
 		// and start loading the data
-		self._authConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
-		if ( nil != self._authConnection )
+		self.authConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
+		if ( nil != _authConnection )
 		{
 			// Create the NSMutableData to hold the received data.
-			self._authResponse = [NSMutableData data];
+			self.authResponse = [NSMutableData data];
 		} 
 		else 
 		{
@@ -347,18 +333,18 @@ static FacebookProxy* gFacebookProxy = NULL;
 	// an example url is:
 	// https://graph.facebook.com/oauth/access_token?client_id=119908831367602&redirect_uri=http://oauth.twoalex.com/&client_secret=e45e55a333eec232d4206d2703de1307&code=674667c45691cbca6a03d480-1394987957%7CjN-9MVsdl0kjyoKRvQq3DbwxL4c.
 
-	NSString* accessTokenURL = [NSString stringWithFormat:kFBAccessTokenURLFormat, kFBClientID, kFBRedirectURI, kFBAppSecret, self._codeString];
+	NSString* accessTokenURL = [NSString stringWithFormat:kFBAccessTokenURLFormat, kFBClientID, kFBRedirectURI, kFBAppSecret, self.codeString];
 
 	NSURLRequest *theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:accessTokenURL]
 																							cachePolicy:NSURLRequestUseProtocolCachePolicy
 																					timeoutInterval:60.0];
 	// create the connection with the request
 	// and start loading the data
-	self._accessTokenConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
-	if ( self._accessTokenConnection ) 
+	self.accessTokenConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
+	if ( _accessTokenConnection ) 
 	{
 		// Create the NSMutableData to hold the received data.
-		self._accessTokenResponse = [NSMutableData data];
+		self.accessTokenResponse = [NSMutableData data];
 	} 
 	else 
 	{
@@ -398,9 +384,9 @@ static FacebookProxy* gFacebookProxy = NULL;
 {
 	NSLog( @"didReceiveResponse" );
  
-	if ( connection == self._authConnection )
+	if ( connection == _authConnection )
 	{
-		self._authResponse = [NSMutableData data];
+		self.authResponse = [NSMutableData data];
 		
 		// the code we need is at the end of the URL in the response parameter
 		// example: 
@@ -415,8 +401,8 @@ static FacebookProxy* gFacebookProxy = NULL;
 		
 		if ( [splitStrings count] > 1 )
 		{
-			self._codeString = [splitStrings objectAtIndex:1];
-			NSLog( @"codeString = [%@]", self._codeString );
+			self.codeString = [splitStrings objectAtIndex:1];
+			NSLog( @"codeString = [%@]", self.codeString );
 		}
 		else
 		{
@@ -424,40 +410,40 @@ static FacebookProxy* gFacebookProxy = NULL;
 			// [ryan:5-31-10] this probably means we need to authorize extended permissions
 			// in that case, the data returned by this connection is the actual html web page that is the next page.
 			// so lets set a flag here, and load it up later when it's all done.
-			self._codeString = nil;
+			self.codeString = nil;
 
 			//			[self confirmExtendedPermissions:responseURL];
 
 //			assert( false );
 		}
 	}
-	else if ( connection == self._accessTokenConnection )
+	else if ( connection == _accessTokenConnection )
 	{
-		self._accessTokenResponse = [NSMutableData data];
+		self.accessTokenResponse = [NSMutableData data];
 	}
 }
 
 -(void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)data 
 {
-	if ( connection == self._authConnection )
+	if ( connection == _authConnection )
 	{
 		NSLog( @"didReceiveData._auth" );
-		[self._authResponse appendData:data];
+		[self.authResponse appendData:data];
 	}
-	else if ( connection = self._accessTokenConnection )
+	else if ( connection == _accessTokenConnection )
 	{		
 		NSLog( @"didReceiveData._token" );
-		[self._accessTokenResponse appendData:data];
+		[self.accessTokenResponse appendData:data];
 	}
 }
 
 -(void)connectionDidFinishLoading:(NSURLConnection*)connection 
 {
-	if ( connection == self._authConnection )
+	if ( connection == _authConnection )
 	{
 		NSLog( @"connectionDidFinishLoading._auth" );
 		
-		NSString* responseBody = [[NSString alloc] initWithData:self._authResponse encoding:NSASCIIStringEncoding];
+		NSString* responseBody = [[NSString alloc] initWithData:self.authResponse encoding:NSASCIIStringEncoding];
 		NSLog( @"auth response: %@", responseBody );
 		[responseBody release];
 		responseBody = nil;
@@ -470,23 +456,23 @@ static FacebookProxy* gFacebookProxy = NULL;
 //		[self confirmExtendedPermissions:responseURL];
 
 		// if we have a code, great, we exchange it for an access_token and we're done
-		if ( nil != self._codeString )
+		if ( nil != _codeString )
 		{
 			[self loadAccessToken];		
 		}
 		else
 		{
 			// if not, we open up another dialog with the permissions confirmation
-			self._permissionDialog = [[FBDataDialog alloc] initWithSession:self._session];
-			self._permissionDialog._webPageData = self._authResponse;
-//			self._permissionDialog.delegate = self;
-			[self._permissionDialog show];
+			self.permissionDialog = [[FBDataDialog alloc] initWithSession:self.session];
+			self.permissionDialog.webPageData = self.authResponse;
+//			self.permissionDialog.delegate = self;
+			[self.permissionDialog show];
 		}
 	}
-	else if ( connection == self._accessTokenConnection )
+	else if ( connection == _accessTokenConnection )
 	{
 		NSLog( @"connectionDidFinishLoading._token" );
-		NSString* responseBody = [[NSString alloc] initWithData:self._accessTokenResponse encoding:NSASCIIStringEncoding];
+		NSString* responseBody = [[NSString alloc] initWithData:self.accessTokenResponse encoding:NSASCIIStringEncoding];
 		NSLog( @"token response: %@", responseBody );
 		
 		// the entire response body is just access_token=xxx, the access token is the goods that we're doing all this for. example is:
@@ -496,8 +482,8 @@ static FacebookProxy* gFacebookProxy = NULL;
 		
 		if ( [splitStrings count] > 1 )
 		{
-			self._oAuthAccessToken = [splitStrings objectAtIndex:1];
-			NSLog( @"accessToken = [%@]", self._oAuthAccessToken );
+			self.oAuthAccessToken = [splitStrings objectAtIndex:1];
+			NSLog( @"accessToken = [%@]", self.oAuthAccessToken );
 			[FacebookProxy updateDefaults];
 			[self finishedAuthorizing];
 		}
@@ -516,18 +502,18 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	if ( connection == self._authConnection )
+	if ( connection == _authConnection )
 	{
 		NSLog( @"_auth connectionDidFail" );
 	}
-	else if ( connection == self._accessTokenConnection )
+	else if ( connection == _accessTokenConnection )
 	{
 		NSLog( @"_token connectionDidFail" );
 	}
 	
 	// release the connection, and the data object
 	[connection release];
-	self._authResponse = nil;
+	self.authResponse = nil;
 // todo - manage this memory in a way that makes sense
 //	// receivedData is declared as a method instance elsewhere
 //	[receivedData release];
@@ -610,8 +596,8 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 -(void)loginAndAuthorizeWithTarget:(id)target callback:(SEL)authCallback
 {
-	self._authTarget = target;
-	self._authCallback = authCallback;
+	self.authTarget = target;
+	self.authCallback = authCallback;
 
 	if ( [self isAuthorized] )
 	{
@@ -629,22 +615,22 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 -(void)forgetToken
 {
-	self._oAuthAccessToken = nil;
+	self.oAuthAccessToken = nil;
 	[FacebookProxy updateDefaults];
 }
 
 -(void)logout
 {
-	self._uid = 0;
+	self.uid = 0;
 }
 
 -(GraphAPI*)newGraph
 {
 	GraphAPI* n_graph = nil;
 	
-	if ( nil != self._oAuthAccessToken )
+	if ( nil != _oAuthAccessToken )
 	{
-		n_graph = [[GraphAPI alloc] initWithAccessToken:self._oAuthAccessToken];
+		n_graph = [[GraphAPI alloc] initWithAccessToken:self.oAuthAccessToken];
 	}
 	
 	return n_graph;
