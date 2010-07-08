@@ -11,7 +11,7 @@
 @synthesize _postButton;
 @synthesize _statusInfo;
 @synthesize _profileImage;
-
+@synthesize getPicureButton = _getPicureButton;
 @synthesize _fullText;
 
 #pragma mark Initialization
@@ -55,7 +55,16 @@
 	self._postButton.frame = CGRectMake(10, 50, 80, 30);
 	[self._postButton addTarget:self action:@selector(doPost) forControlEvents:UIControlEventTouchUpInside];
 	[self._postButton setTitle:@"Post" forState:UIControlStateNormal];
+
+	self.getPicureButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+	self.getPicureButton.frame = CGRectMake(200, 10, 80, 20);
+	[_getPicureButton setTitle:@"Picture" forState:UIControlStateNormal];
+	[_getPicureButton addTarget:self action:@selector(getPicture:) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview:_getPicureButton];
 	
+	self._profileImage = [[[UIImageView alloc] initWithFrame:CGRectMake(0, 150, 320, 300)] autorelease];
+	_profileImage.backgroundColor = [UIColor redColor];
+	[self.view addSubview:_profileImage];
 	width = 50.0f;
 	height = 50.0f;
 #ifdef __IPHONE_3_2 && IS_IPAD
@@ -89,11 +98,25 @@
 	content_view.backgroundColor = [UIColor blackColor];
 	self.view = content_view;
 	[content_view release];
+
+	
 }
 
+-(void)getPicture:(id)sender {
+	if ( nil == self._graph && nil != [FacebookProxy instance].oAuthAccessToken )
+	{
+		self._graph = [[FacebookProxy instance] newGraph];
+	}
+	UIImage *image = [self._graph getProfilePhotoForObject:@"me"];	
+//	CGSize size = image.size;
+	UIImageView *imageView = [[[UIImageView alloc] initWithImage:image] autorelease];
+	imageView.center = self.view.center;
+	
+	[self.view addSubview:imageView];
+}
 //-(void)initEvents
 //{
-//	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notify:) name:@"Event" object:notificationSender];	
+//	//[[NSNotif	icationCenter defaultCenter] addObserver:self selector:@selector(notify:) name:@"Event" object:notificationSender];	
 //}
 
 //-(void)stopEvents
@@ -107,7 +130,6 @@
 	[self.view addSubview:self._postButton];
 	[self.view addSubview:self._statusInfo];
 	[self.view addSubview:self._fullText];
-
 	//	[self.view addSubview:self._profileImage];
 }
 
@@ -191,6 +213,8 @@
 	
 	if ( nil == self._profileImage.superview )
 		[self.view addSubview:self._profileImage];
+	
+	_statusInfo.text = @"Authorized";
 }
 
 #pragma mark Button Handlers

@@ -598,7 +598,8 @@ static FacebookProxy* gFacebookProxy = NULL;
 {
 	self.authTarget = target;
 	self.authCallback = authCallback;
-
+	//we forget the token on purpose so we can get a new token incase the user has revoked access on facebook site.
+	[self forgetToken];
 	if ( [self isAuthorized] )
 	{
 		[self finishedAuthorizing];

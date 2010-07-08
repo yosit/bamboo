@@ -83,6 +83,7 @@ NSString* const kConnectionAlbums = @"albums";
 	if ( self = [super init] )
 	{
 		self.accessToken = access_token;
+		self.isSynchronous = YES;
 	}
 	return self;	
 }
@@ -135,8 +136,10 @@ NSString* const kConnectionAlbums = @"albums";
 }
 
 -(UIImage*)getProfilePhotoForObject:(NSString*)obj_id
-{
-	return [self getProfilePhotoForObject:obj_id withArgs:nil];
+{	
+	NSDictionary* args = [NSDictionary dictionaryWithObject:@"large" forKey:@"type"];
+
+	return [self getProfilePhotoForObject:obj_id withArgs:args];
 }
 
 -(UIImage*)getLargeProfilePhotoForObject:(NSString*)obj_id
@@ -411,6 +414,7 @@ NSString* const kConnectionAlbums = @"albums";
 	// synchronous call
 	self.responseData = [NSURLConnection sendSynchronousRequest:r_url returningResponse:&response error:&error];
 
+	NSLog(@"Error:%@",error);
 	// async
 	// self._connection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
 		
@@ -425,6 +429,7 @@ NSString* const kConnectionAlbums = @"albums";
 //	}
 	
 	
+	NSString *string = [[NSString alloc] initWithData:_responseData encoding:NSUTF8StringEncoding];
 	if ( nil == _responseData )
 	{
 		NSLog(@"Connection failed!\n URL = %@\n Error - %@ %@",
