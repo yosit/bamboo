@@ -222,6 +222,7 @@ static FacebookProxy* gFacebookProxy = NULL;
 	{
 		NSLog( @"Starting new session" );
 		self.session = [FBSession sessionForApplication:kFBAPIKey secret:kFBAppSecret delegate:self];
+		[self.session resume];
 	}
 	else 
 	{
@@ -231,7 +232,8 @@ static FacebookProxy* gFacebookProxy = NULL;
 
 -(bool)isLoggedin
 {
-	return _uid != 0;
+	[self getSession];
+	return _session.uid != 0;
 }
 
 -(void)login
@@ -303,7 +305,7 @@ static FacebookProxy* gFacebookProxy = NULL;
 	{
 		// we default to asking for read_stream and publish_stream, if your app needs something different...this is the code to change
 		// hardcoded for now, so at least we don't break when Facebook changes permissions on June 1
-		NSString* accessTokenURL = [NSString stringWithFormat:kFBAuthURLFormat, kFBClientID, kFBRedirectURI, @"publish_stream,read_stream"];
+		NSString* accessTokenURL = [NSString stringWithFormat:kFBAuthURLFormat, kFBClientID, kFBRedirectURI, @"publish_stream,read_stream,offline_access"];
 
 		NSURLRequest *theRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:accessTokenURL]
 																							cachePolicy:NSURLRequestUseProtocolCachePolicy
@@ -598,7 +600,7 @@ static FacebookProxy* gFacebookProxy = NULL;
 {
 	self.authTarget = target;
 	self.authCallback = authCallback;
-	//we forget the token on purpose so we can get a new token incase the user has revoked access on facebook site.
+	//we forget the token on purpose so we can get a new token in case the user has revoked access on facebook site.
 	[self forgetToken];
 	if ( [self isAuthorized] )
 	{
